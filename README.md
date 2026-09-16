@@ -1,95 +1,128 @@
+# 🎟️ Ticket Reservation System - Backend
 
-# 🎫 Ticket Reservation System API - Backend
+## 📌 Descripción
+API RESTful para el sistema de reserva de tickets. Permite gestionar eventos, reservas y autenticación de usuarios con JWT. Desarrollado con Node.js, Express y MySQL.
 
-This is the backend service for the Ticket Reservation System, designed to handle event management and ticket reservation functionalities.
+## 🚀 Tecnologías
+- Node.js (v26)
+- Express (v5)
+- MySQL (v8.4)
+- JWT (Autenticación)
+- bcryptjs (Encriptación)
+- Knex.js (Migraciones)
+- Jest + Supertest (Pruebas)
+- Docker (Contenerización)
 
-## 📜 Project Overview
+## 📁 Estructura del Proyecto
 
-The Ticket Reservation System API allows users to:
-- 🔍 View available events
-- 🎟️ Reserve tickets for specific events
-- 🔐 Administrators can manage events (create, update, and delete)
+backend/
+├── src/
+│   ├── config/
+│   │   └── database.js       # Configuración de MySQL
+│   ├── models/
+│   │   ├── EventModel.js
+│   │   ├── ReservationModel.js
+│   │   └── UserModel.js
+│   ├── controllers/
+│   │   ├── eventController.js
+│   │   ├── reservationController.js
+│   │   └── authController.js
+│   ├── routes/
+│   │   ├── eventRoutes.js
+│   │   ├── reservationRoutes.js
+│   │   └── authRoutes.js
+│   ├── middleware/
+│   │   └── auth.js           # Autenticación JWT
+│   ├── tests/
+│   │   ├── setup.js
+│   │   ├── events.test.js
+│   │   ├── auth.test.js
+│   │   └── reservations.test.js
+│   └── app.js                # Punto de entrada
+├── migrations/               # Migraciones de Knex
+│   └── 20260916160912_create_initial_schema.js
+├── knexfile.js               # Configuración de Knex
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+├── .env.example
+└── .gitignore
 
-The backend is designed as a RESTful API using [Node.js with Express](https://expressjs.com/) (or PHP with Laravel as an alternative) and is fully dockerized.
+## 📦 Instalación y Ejecución
 
-## ⚙️ Requirements
+### Opción 1: Con Docker (Recomendado)
+git clone https://github.com/AlexAdrianPerezSoriano/ticket-backend.git
+cd ticket-backend
+docker compose up --build
 
-- Node.js (or PHP for Laravel implementation)
-- Docker
-- Docker Compose
-- MySQL or MongoDB (configurable database choice)
+Nota: Las migraciones se ejecutan automáticamente al iniciar el contenedor. Si no, ejecuta:
+docker exec -it ticket_backend npm run migrate
 
-## 🚀 Setup
+### Opción 2: Desarrollo local
+npm install
+cp .env.example .env  # Configura tus variables
+npm run migrate       # Crea las tablas
+npm run dev           # Inicia el servidor
 
-### 1. 📂 Clone the Repository
+## 🔧 Variables de Entorno (.env)
+Crea un archivo .env basado en .env.example:
 
-```bash
-git clone https://github.com/codediaz/ct-candidates-app-backend.git
-cd ct-candidates-app-backend
-```
+PORT=5000
+DB_HOST=localhost
+DB_USER=example_user
+DB_PASSWORD=example_password
+DB_NAME=ticket_db
+JWT_SECRET=example_jwt_secret
 
-### 2. 🔧 Environment Variables
+## 🗄️ Migraciones (Knex.js)
 
-Create a `.env` file in the backend root directory to configure environment variables like database connection and other configurations.
+Este proyecto usa Knex.js para gestionar la base de datos.
 
-Example `.env` file:
+Comandos disponibles:
+npm run migrate           # Ejecuta todas las migraciones pendientes
+npm run migrate:rollback  # Revierte la última migración
 
-```
-DATABASE_URL=mysql://user:password@localhost:3306/ticket_system
-JWT_SECRET=your_jwt_secret_key
-PORT=3000
-```
+Crear una nueva migración:
+npx knex migrate:make nombre_de_la_migracion --knexfile knexfile.js
 
-### 3. 🐳 Docker Setup
+## 🔧 Endpoints de la API
 
-Ensure Docker and Docker Compose are installed on your machine. Build and start the containers using the following command:
+### Autenticación
+- POST /auth/register - Registrar usuario
+- POST /auth/login - Iniciar sesión (devuelve JWT)
 
-```bash
-docker-compose up --build
-```
+### Eventos
+- GET /events - Listar eventos (público)
+- GET /events/:id - Detalle evento (público)
+- POST /events - Crear evento (admin)
+- PUT /events/:id - Editar evento (admin)
+- DELETE /events/:id - Eliminar evento (admin)
 
-This will start the backend service along with the database (configured in Docker Compose).
+### Reservas
+- POST /reservations - Crear reserva
 
-### 4. 📄 API Documentation
+## 👥 Credenciales de Prueba
+- Admin: admin@example.com / admin123
+- User: user@example.com / user123
 
-The API documentation is available in the `openapi.yaml` file. Use Swagger UI or any OpenAPI viewer to load and explore the API endpoints.
+## 🧪 Pruebas Unitarias
+npm test
 
-To view the documentation locally, you can use tools like [Swagger Editor](https://editor.swagger.io/) by loading the `openapi.yaml` file.
+## 🐳 Dockerización
 
-## 🛠️ Usage
+Levantar backend + MySQL:
+docker compose up --build
 
-### Endpoints Overview
+Servicios incluidos:
+- db: MySQL 8.4
+- backend: Node.js 26 + Express
 
-The backend provides the following key endpoints:
+## 📝 Autor
+Alex Pérez Soriano
+https://www.linkedin.com/in/alexperezsoriano/
 
-- `GET /events` - List all available events
-- `GET /events/{id}` - Get details of a specific event
-- `POST /events` - Add a new event (Admin only)
-- `PUT /events/{id}` - Edit an existing event
-- `DELETE /events/{id}` - Delete an event (Admin only)
-- `POST /reservations` - Create a new ticket reservation
+## 📅 Fecha
+Septiembre 2026
 
-Refer to `openapi.yaml` for detailed specifications and request/response schemas.
-
-## 🤝 Contribution
-
-### Pull Request Guidelines for Candidates
-
-If you are a candidate completing this technical test, please ensure your Pull Request (PR) includes:
-1. A clear title summarizing the changes (e.g., "Implement event reservation feature").
-2. A detailed description covering:
-   - The purpose of the PR.
-   - The main changes introduced, with a breakdown of each endpoint or functionality added.
-   - Any new dependencies or setup steps.
-   - Instructions for testing your implementation, if applicable.
-3. Ensure that your code follows best practices and passes any tests provided.
-
-Follow the [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) model.
-
-## 📄 License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
-## 📬 Contact
-
-For any inquiries, please reach out to [Sergio Díaz](mailto:sergio.diaz@funiber.org).
+## 📄 Licencia
+Este proyecto fue desarrollado como prueba técnica.
